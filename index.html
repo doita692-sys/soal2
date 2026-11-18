@@ -1,0 +1,1034 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProbKu - Probability Engine</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(180deg, #0369A1, #0284C7, #0EA5E9);
+    min-height: 100vh;
+    padding: 25px;
+    color: white;
+}
+
+.container {
+    max-width: 1250px;
+    margin: auto;
+}
+
+.navbar {
+    background: white;
+    color: #0F172A;
+    padding: 22px 28px;
+    border-radius: 18px;
+    border-bottom: 5px solid #F59E0B;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+    box-shadow: 0 12px 30px #0002;
+}
+
+.brand-title {
+    font-size: 32px;
+    font-weight: 900;
+}
+
+.brand-sub {
+    color: #475569;
+    margin-top: 5px;
+}
+
+.badge {
+    background: #EFF6FF;
+    color: #1D4ED8;
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.mode-selection {
+    margin-bottom: 25px;
+}
+
+.mode-selection label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.mode-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.mode-buttons button {
+    background: white;
+    color: #0369A1;
+    border: none;
+    padding: 13px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    flex: 1;
+}
+
+.mode-buttons button.active {
+    background: #F59E0B;
+    color: #0F172A;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 25px;
+    align-items: start;
+}
+
+.panel {
+    min-width: 0;
+}
+
+.panel-title {
+    font-size: 21px;
+    margin-bottom: 18px;
+}
+
+.input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.field label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 7px;
+    font-size: 14px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 9px;
+    border: 1px solid #CBD5E1;
+    font-size: 15px;
+    outline: none;
+    background: white;
+    color: #0F172A;
+}
+
+input:focus, select:focus {
+    border: 2px solid #F59E0B;
+}
+
+.calculate-btn {
+    background: #F59E0B;
+    color: #0F172A;
+    font-weight: 800;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.calculate-btn:hover {
+    background: #D97706;
+    color: white;
+}
+
+.output-box {
+    background: white;
+    color: #1E293B;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 10px 25px #0002;
+    min-width: 0;
+}
+
+.output-title {
+    font-size: 19px;
+    margin-bottom: 20px;
+}
+
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.stat-tile {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-top: 4px solid #0284C7;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+
+.stat-tile.highlight {
+    background: #FFFBEB;
+    border-color: #FDE68A;
+    border-top: 4px solid #F59E0B;
+}
+
+.tile-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #64748B;
+    text-transform: uppercase;
+}
+
+.tile-number {
+    font-size: 27px;
+    font-weight: 900;
+    color: #0F172A;
+    margin: 8px 0;
+    overflow-wrap: anywhere;
+}
+
+.tile-badge {
+    display: inline-block;
+    background: #E0F2FE;
+    color: #0369A1;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.highlight .tile-badge {
+    background: #FEF3C7;
+    color: #B45309;
+}
+
+.chart-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #F8FAFC;
+    border-radius: 12px;
+}
+
+.chart-title {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.gauge {
+    width: 100%;
+    height: 22px;
+    background: #E2E8F0;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.gauge-fill {
+    height: 100%;
+    width: 0%;
+    background: #0284C7;
+    transition: width .5s;
+    border-radius: 20px;
+}
+
+.gauge-number {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin: 12px;
+    color: #0F172A;
+}
+
+.insight {
+    background: #F0F9FF;
+    border-left: 6px solid #0284C7;
+    color: #0C4A6E;
+    padding: 16px 20px;
+    border-radius: 10px;
+    line-height: 1.6;
+    margin-top: 18px;
+    font-size: 14px;
+}
+
+.bar {
+    display: flex;
+    height: 45px;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.bar-blue {
+    background: #0284C7;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    overflow: hidden;
+}
+
+.bar-gold {
+    background: #F59E0B;
+    color: #0F172A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    overflow: hidden;
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    font-size: 12px;
+}
+
+.legend span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.footer {
+    background: rgba(15,23,42,.85);
+    padding: 22px;
+    text-align: center;
+    border-radius: 16px;
+    margin-top: 30px;
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+.footer strong {
+    color: #38BDF8;
+}
+
+.hidden {
+    display: none;
+}
+
+@media(max-width: 800px) {
+    body {
+        padding: 13px;
+    }
+
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .navbar {
+        padding: 18px;
+    }
+
+    .brand-title {
+        font-size: 27px;
+    }
+}
+
+@media(max-width: 400px) {
+    .result-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <header class="navbar">
+        <div>
+            <div class="brand-title">🔷 ProbKu</div>
+            <div class="brand-sub">
+                Probability Analytics & Bayesian Inference Studio
+            </div>
+        </div>
+
+        <div class="badge">
+            KELOMPOK 4 • KELAS A INFORMATIKA
+        </div>
+    </header>
+
+    <!-- NAVIGASI -->
+    <section class="mode-selection">
+        <label>Pilih Mode Perhitungan Probabilitas:</label>
+
+        <div class="mode-buttons">
+            <button id="btnMode1" class="active" onclick="changeMode(1)">
+                1️⃣ Kalkulator Probabilitas Dasar
+            </button>
+
+            <button id="btnMode2" onclick="changeMode(2)">
+                2️⃣ Probabilitas Bersyarat & Bayes
+            </button>
+        </div>
+    </section>
+
+    <!-- MODE 1 -->
+    <section id="mode1" class="main-content">
+
+        <div class="panel">
+            <h3 class="panel-title">⚙️ Konfigurasi Kejadian</h3>
+
+            <div class="input-box">
+
+                <div class="field">
+                    <label>Cara memasukkan nilai peluang:</label>
+                    <select id="sumber" onchange="ubahSumber()">
+                        <option value="nilai">
+                            Input Nilai Probabilitas P(A) & P(B)
+                        </option>
+                        <option value="frekuensi">
+                            Hitung dari Frekuensi n(A) / n(S)
+                        </option>
+                    </select>
+                </div>
+
+                <div id="inputNilai">
+                    <div class="field">
+                        <label>Nilai Probabilitas P(A)</label>
+                        <input type="number" id="pa" min="0" max="1"
+                        step="0.01" value="0.30">
+                    </div>
+
+                    <div class="field">
+                        <label>Nilai Probabilitas P(B)</label>
+                        <input type="number" id="pb" min="0" max="1"
+                        step="0.01" value="0.40">
+                    </div>
+                </div>
+
+                <div id="inputFrekuensi" class="hidden">
+                    <div class="field">
+                        <label>Total Ruang Sampel n(S)</label>
+                        <input type="number" id="ns" min="1" value="100">
+                    </div>
+
+                    <div class="field">
+                        <label>Banyak Kejadian n(A)</label>
+                        <input type="number" id="na" min="0" value="30">
+                    </div>
+
+                    <div class="field">
+                        <label>Banyak Kejadian n(B)</label>
+                        <input type="number" id="nb" min="0" value="40">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Hubungan Kejadian A dan B:</label>
+                    <select id="relasi" onchange="ubahRelasi()">
+                        <option value="lepas">
+                            Saling Lepas (P(A ∩ B) = 0)
+                        </option>
+                        <option value="independen">
+                            Independen (P(A ∩ B) = P(A) × P(B))
+                        </option>
+                        <option value="umum">
+                            Umum (Masukkan Irisan Manual)
+                        </option>
+                    </select>
+                </div>
+
+                <div id="inputIrisan" class="field hidden">
+                    <label>Nilai Irisan P(A ∩ B)</label>
+                    <input type="number" id="irisan" min="0"
+                    max="0.30" step="0.01" value="0">
+                    <small style="color:#E2E8F0">
+                        Maksimum mengikuti peluang terkecil.
+                    </small>
+                </div>
+
+                <button class="calculate-btn" onclick="hitungDasar()">
+                    ⚡ Hitung Probabilitas Dasar
+                </button>
+
+            </div>
+        </div>
+
+        <div class="output-box">
+            <h3 class="output-title">
+                📊 Hasil Perhitungan & Visualisasi Peluang
+            </h3>
+
+            <div class="result-grid">
+                <div class="stat-tile highlight">
+                    <div class="tile-title">Gabungan P(A ∪ B)</div>
+                    <div class="tile-number" id="gabungan">0.5800</div>
+                    <span class="tile-badge" id="gabunganPersen">
+                        Peluang: 58.00%
+                    </span>
+                </div>
+
+                <div class="stat-tile">
+                    <div class="tile-title">Irisan P(A ∩ B)</div>
+                    <div class="tile-number" id="irisanHasil">0.0000</div>
+                    <span class="tile-badge" id="irisanPersen">
+                        Peluang: 0%
+                    </span>
+                </div>
+
+                <div class="stat-tile">
+                    <div class="tile-title">Komplemen P(A')</div>
+                    <div class="tile-number" id="kompa">0.7000</div>
+                    <span class="tile-badge" id="kompaPersen">
+                        Bukan A: 70%
+                    </span>
+                </div>
+
+                <div class="stat-tile">
+                    <div class="tile-title">Komplemen P(B')</div>
+                    <div class="tile-number" id="kompb">0.6000</div>
+                    <span class="tile-badge" id="kompbPersen">
+                        Bukan B: 60%
+                    </span>
+                </div>
+            </div>
+
+            <div class="chart-box">
+                <div class="chart-title">
+                    Indikator Peluang A atau B
+                </div>
+
+                <div class="gauge">
+                    <div class="gauge-fill" id="gaugeFill"></div>
+                </div>
+
+                <div class="gauge-number" id="gaugeNumber">
+                    58.00%
+                </div>
+            </div>
+
+            <div class="insight" id="insightDasar">
+                💡 Interpretasi ProbKu: Peluang terjadinya kejadian A atau B.
+            </div>
+        </div>
+    </section>
+
+    <!-- MODE 2 -->
+    <section id="mode2" class="main-content hidden">
+
+        <div class="panel">
+            <h3 class="panel-title">🧠 Parameter Bayes & Bersyarat</h3>
+
+            <div class="input-box">
+
+                <div class="field">
+                    <label>Pilih Metode Analisis:</label>
+
+                    <select id="modelBayes" onchange="ubahModel()">
+                        <option value="bayes">
+                            Teorema Bayes (Kasus Filter Phishing)
+                        </option>
+
+                        <option value="bersyarat">
+                            Probabilitas Bersyarat P(A|B)
+                        </option>
+                    </select>
+                </div>
+
+                <div id="formBayes">
+
+                    <div class="field">
+                        <label>Prevalensi Email Phishing P(H) [%]</label>
+                        <input type="number" id="prev"
+                        min="0" max="100" step="0.5" value="8">
+                    </div>
+
+                    <div class="field">
+                        <label>Sensitivitas Deteksi P(E|H) [%]</label>
+                        <input type="number" id="sens"
+                        min="0" max="100" step="0.5" value="92">
+                    </div>
+
+                    <div class="field">
+                        <label>False Positive P(E|H') [%]</label>
+                        <input type="number" id="fp"
+                        min="0" max="100" step="0.5" value="3">
+                    </div>
+
+                </div>
+
+                <div id="formBersyarat" class="hidden">
+
+                    <div class="field">
+                        <label>Probabilitas Syarat P(B)</label>
+                        <input type="number" id="pbc"
+                        min="0.01" max="1" step="0.01" value="0.50">
+                    </div>
+
+                    <div class="field">
+                        <label>Probabilitas Irisan P(A ∩ B)</label>
+                        <input type="number" id="pabc"
+                        min="0" max="0.50" step="0.01" value="0.20">
+                    </div>
+
+                </div>
+
+                <button class="calculate-btn" onclick="hitungBayes()">
+                    ⚡ Jalankan Analisis Bayes
+                </button>
+
+            </div>
+        </div>
+
+        <div class="output-box">
+
+            <div id="hasilBayes">
+
+                <h3 class="output-title">
+                    🛡️ Hasil Analisis Deteksi Phishing
+                </h3>
+
+                <div class="result-grid">
+
+                    <div class="stat-tile">
+                        <div class="tile-title">
+                            Email Ditandai Sistem
+                        </div>
+
+                        <div class="tile-number" id="ditandai">
+                            0.1012
+                        </div>
+
+                        <span class="tile-badge" id="ditandaiPersen">
+                            10.12%
+                        </span>
+                    </div>
+
+                    <div class="stat-tile highlight">
+                        <div class="tile-title">
+                            P(Phishing | Ditandai)
+                        </div>
+
+                        <div class="tile-number" id="posterior">
+                            0.7273
+                        </div>
+
+                        <span class="tile-badge" id="posteriorPersen">
+                            72.73%
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="chart-box">
+                    <div class="chart-title">
+                        Komposisi Akurasi Ketika Email Ditandai
+                    </div>
+
+                    <div class="bar">
+                        <div class="bar-blue" id="barBenar"
+                        style="width:72.73%">
+                            72.73%
+                        </div>
+
+                        <div class="bar-gold" id="barSalah"
+                        style="width:27.27%">
+                            27.27%
+                        </div>
+                    </div>
+
+                    <div class="legend">
+                        <span>
+                            <i class="dot" style="background:#0284C7"></i>
+                            Benar Phishing
+                        </span>
+
+                        <span>
+                            <i class="dot" style="background:#F59E0B"></i>
+                            False Alarm
+                        </span>
+                    </div>
+                </div>
+
+                <div class="insight" id="insightBayes">
+                    💡 Interpretasi ProbKu
+                </div>
+
+            </div>
+
+            <div id="hasilBersyarat" class="hidden">
+
+                <h3 class="output-title">
+                    📐 Hasil Probabilitas Bersyarat P(A|B)
+                </h3>
+
+                <div class="stat-tile highlight">
+                    <div class="tile-title">
+                        Probabilitas Bersyarat P(A|B)
+                    </div>
+
+                    <div class="tile-number" id="hasilKondisional">
+                        0.4000
+                    </div>
+
+                    <span class="tile-badge" id="hasilKondisionalPersen">
+                        Peluang: 40%
+                    </span>
+                </div>
+
+                <div class="insight" id="insightKondisional">
+                    💡 Interpretasi ProbKu
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <strong>ProbKu</strong> — Dikembangkan oleh
+        <strong>KELOMPOK 4</strong> (Kelas A Informatika)
+        <br>
+
+        Anggota:
+        1. Randhan Hidayat (2503010001) •
+        2. Arsy Agung Nurmawan (2503010137) •
+        3. Dea Anandia Salsabila (2503010010) •
+        4. Alwan Fauzan Sawal (2503010006) •
+        5. Devina Putri Nur Aliah (2503010045) •
+    </footer>
+
+</div>
+
+<script>
+
+// NAVIGASI MODE
+function changeMode(mode) {
+
+    document.getElementById("mode1").classList.toggle(
+        "hidden", mode !== 1
+    );
+
+    document.getElementById("mode2").classList.toggle(
+        "hidden", mode !== 2
+    );
+
+    document.getElementById("btnMode1").classList.toggle(
+        "active", mode === 1
+    );
+
+    document.getElementById("btnMode2").classList.toggle(
+        "active", mode === 2
+    );
+}
+
+// MENGUBAH SUMBER INPUT
+function ubahSumber() {
+
+    let sumber = document.getElementById("sumber").value;
+
+    document.getElementById("inputNilai").classList.toggle(
+        "hidden", sumber !== "nilai"
+    );
+
+    document.getElementById("inputFrekuensi").classList.toggle(
+        "hidden", sumber !== "frekuensi"
+    );
+}
+
+// MENGUBAH RELASI
+function ubahRelasi() {
+
+    let relasi = document.getElementById("relasi").value;
+
+    document.getElementById("inputIrisan").classList.toggle(
+        "hidden", relasi !== "umum"
+    );
+}
+
+// VALIDASI ANGKA
+function angka(id) {
+    return Number(document.getElementById(id).value);
+}
+
+function validasiRentang(id, min, max, nama) {
+
+    let nilai = angka(id);
+
+    if (!Number.isFinite(nilai) || nilai < min || nilai > max) {
+        alert(nama + " harus berada antara " + min + " dan " + max);
+        document.getElementById(id).focus();
+        return false;
+    }
+
+    return true;
+}
+
+function tampil(id, nilai) {
+    document.getElementById(id).textContent = nilai;
+}
+
+// PERHITUNGAN PROBABILITAS DASAR
+function hitungDasar() {
+
+    let pa, pb;
+
+    let sumber = document.getElementById("sumber").value;
+
+    if (sumber === "nilai") {
+
+        if (
+            !validasiRentang("pa", 0, 1, "P(A)") ||
+            !validasiRentang("pb", 0, 1, "P(B)")
+        ) return;
+
+        pa = angka("pa");
+        pb = angka("pb");
+
+    } else {
+
+        if (!validasiRentang("ns", 1, 1000000000, "n(S)")) return;
+
+        let ns = angka("ns");
+        let na = angka("na");
+        let nb = angka("nb");
+
+        if (
+            !Number.isInteger(ns) ||
+            !Number.isInteger(na) ||
+            !Number.isInteger(nb) ||
+            na < 0 || nb < 0 ||
+            na > ns || nb > ns
+        ) {
+            alert("Frekuensi harus bilangan bulat dan tidak melebihi ruang sampel.");
+            return;
+        }
+
+        pa = na / ns;
+        pb = nb / ns;
+    }
+
+    let relasi = document.getElementById("relasi").value;
+
+    let irisan = 0;
+    let gabungan = 0;
+    let analisis = "";
+
+    if (relasi === "lepas") {
+
+        irisan = 0;
+        gabungan = pa + pb;
+
+        analisis =
+        "Karena kejadian A dan B saling lepas, keduanya tidak dapat terjadi bersamaan sehingga irisan bernilai 0.";
+
+    } else if (relasi === "independen") {
+
+        irisan = pa * pb;
+        gabungan = pa + pb - irisan;
+
+        analisis =
+        "Karena kejadian A dan B independen, peluang keduanya terjadi bersamaan adalah hasil kali P(A) × P(B).";
+
+    } else {
+
+        let maksimum = Math.min(pa, pb);
+        let nilaiIrisan = angka("irisan");
+
+        if (
+            !Number.isFinite(nilaiIrisan) ||
+            nilaiIrisan < 0 ||
+            nilaiIrisan > maksimum
+        ) {
+            alert("Nilai irisan harus antara 0 dan " + maksimum.toFixed(4));
+            return;
+        }
+
+        irisan = nilaiIrisan;
+        gabungan = pa + pb - irisan;
+
+        analisis =
+        "Perhitungan menggunakan aturan penjumlahan umum: P(A ∪ B) = P(A) + P(B) - P(A ∩ B).";
+    }
+
+    let kompA = 1 - pa;
+    let kompB = 1 - pb;
+
+    tampil("gabungan", gabungan.toFixed(4));
+    tampil("gabunganPersen", "Peluang: " + (gabungan * 100).toFixed(2) + "%");
+
+    tampil("irisanHasil", irisan.toFixed(4));
+    tampil("irisanPersen", "Peluang: " + (irisan * 100).toFixed(2) + "%");
+
+    tampil("kompa", kompA.toFixed(4));
+    tampil("kompaPersen", "Bukan A: " + (kompA * 100).toFixed(2) + "%");
+
+    tampil("kompb", kompB.toFixed(4));
+    tampil("kompbPersen", "Bukan B: " + (kompB * 100).toFixed(2) + "%");
+
+    document.getElementById("gaugeFill").style.width =
+    (gabungan * 100) + "%";
+
+    tampil("gaugeNumber", (gabungan * 100).toFixed(2) + "%");
+
+    document.getElementById("insightDasar").innerHTML =
+    "<b>💡 Interpretasi ProbKu:</b> " +
+    analisis +
+    " Peluang terjadinya kejadian A atau B adalah sebesar <b>" +
+    gabungan.toFixed(4) +
+    " (" + (gabungan * 100).toFixed(2) + "%)</b>.";
+}
+
+// UBAH MODEL BAYES
+function ubahModel() {
+
+    let model = document.getElementById("modelBayes").value;
+
+    document.getElementById("formBayes").classList.toggle(
+        "hidden", model !== "bayes"
+    );
+
+    document.getElementById("formBersyarat").classList.toggle(
+        "hidden", model !== "bersyarat"
+    );
+
+    document.getElementById("hasilBayes").classList.toggle(
+        "hidden", model !== "bayes"
+    );
+
+    document.getElementById("hasilBersyarat").classList.toggle(
+        "hidden", model !== "bersyarat"
+    );
+}
+
+// PERHITUNGAN BAYES
+function hitungBayes() {
+
+    let model = document.getElementById("modelBayes").value;
+
+    if (model === "bayes") {
+
+        if (
+            !validasiRentang("prev", 0, 100, "Prevalensi") ||
+            !validasiRentang("sens", 0, 100, "Sensitivitas") ||
+            !validasiRentang("fp", 0, 100, "False Positive")
+        ) return;
+
+        let prev = angka("prev") / 100;
+        let sens = angka("sens") / 100;
+        let fp = angka("fp") / 100;
+
+        let tidakH = 1 - prev;
+
+        let tp = prev * sens;
+        let fpTotal = tidakH * fp;
+
+        let ditandai = tp + fpTotal;
+
+        let posterior = ditandai > 0
+            ? tp / ditandai
+            : 0;
+
+        let falseAlarm = 1 - posterior;
+
+        tampil("ditandai", ditandai.toFixed(4));
+
+        tampil(
+            "ditandaiPersen",
+            (ditandai * 100).toFixed(2) + "% dari total email"
+        );
+
+        tampil("posterior", posterior.toFixed(4));
+
+        tampil(
+            "posteriorPersen",
+            "Peluang: " + (posterior * 100).toFixed(2) + "%"
+        );
+
+        document.getElementById("barBenar").style.width =
+            (posterior * 100) + "%";
+
+        document.getElementById("barBenar").textContent =
+            (posterior * 100).toFixed(2) + "%";
+
+        document.getElementById("barSalah").style.width =
+            (falseAlarm * 100) + "%";
+
+        document.getElementById("barSalah").textContent =
+            (falseAlarm * 100).toFixed(2) + "%";
+
+        document.getElementById("insightBayes").innerHTML =
+        "<b>💡 Interpretasi ProbKu:</b> Dari seluruh email yang masuk, " +
+        "sistem filter akan menandai <b>" +
+        (ditandai * 100).toFixed(2) +
+        "%</b> di antaranya. Jika sebuah email ditandai oleh sistem, " +
+        "peluang email tersebut benar-benar phishing adalah <b>" +
+        (posterior * 100).toFixed(2) +
+        "%</b>, sedangkan " +
+        (falseAlarm * 100).toFixed(2) +
+        "% sisanya merupakan email aman yang salah ditandai.";
+
+    } else {
+
+        if (
+            !validasiRentang("pbc", 0.01, 1, "P(B)") ||
+            !validasiRentang("pabc", 0, 1, "P(A ∩ B)")
+        ) return;
+
+        let pb = angka("pbc");
+        let pab = angka("pabc");
+
+        if (pab > pb) {
+            alert("P(A ∩ B) tidak boleh lebih besar dari P(B).");
+            return;
+        }
+
+        let hasil = pab / pb;
+
+        tampil("hasilKondisional", hasil.toFixed(4));
+
+        tampil(
+            "hasilKondisionalPersen",
+            "Peluang: " + (hasil * 100).toFixed(2) + "%"
+        );
+
+        document.getElementById("insightKondisional").innerHTML =
+        "<b>💡 Interpretasi ProbKu:</b> Dengan syarat kejadian B telah terjadi, " +
+        "maka peluang terjadinya kejadian A adalah sebesar <b>" +
+        hasil.toFixed(4) +
+        " (" + (hasil * 100).toFixed(2) + "%)</b>.";
+    }
+}
+
+// HASIL AWAL OTOMATIS
+hitungDasar();
+hitungBayes();
+
+</script>
+
+</body>
+</html>
